@@ -1,0 +1,53 @@
+---
+title: "Stillbirth-From-2011-to-2020"
+author: "Sirui Huang"
+date: 2020-09-26T21:13:14-05:00
+bibliography: "references.bib"
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+ 
+# 1) Abstraction
+This assignment mainly researched stillbirth monthly in Etobicoke from 2011 to 2020. It used two histograms to compare general tendency and situation in 2020, which find there was a rise in the mode of stillbirth monthly from 50 to 70. In addition, the largest value of fetus which died in the uterus in 2020 decreased compared with total trend.
+
+# 2) Introduction
+Many babies are died after 20 weeks pregnancy and before they come up in this world, we call this phenomenon is stillbirth. The data of this project illustrate total trend of stillbirth from Registry Services Tracking System. Following graphs and descriptions will tell people more information about theme.
+
+# 3) Data Introduction
+The background of dataset is about stillbirth which was recorded by Registry Services at the Etobicoke Civic Centre from 2011 to 2020. Here are two main variables. One is SILLBIRTH_LICENSES (belongs to integer) that describes number of stillbirths registered in the month. The other one is TIME_PERIOD (belongs to character) which illustrates month death registered. Id and CIVIC_CENTRE are less important, they represent unique row identifier for open data base and code of civic centre respectively.
+I use @citetidyverse and City Clerk's Office(2020).
+```{r}
+install.packages("opendatatoronto")
+install.packages("dplyr")
+library(opendatatoronto)
+library(dplyr)
+```
+
+```{r}
+package <- show_package("93b2ff8c-989b-49cd-8597-5286c95a287e")
+package
+resources <- list_package_resources("93b2ff8c-989b-49cd-8597-5286c95a287e")
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+data
+```
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+ggplot(data = data, aes(x=STILLBIRTH_LICENSES)) + geom_histogram(color = 'grey', fill='pink', bins=15)
+data %>% filter(TIME_PERIOD >2020)->new_data
+ggplot(data = new_data, aes(x=STILLBIRTH_LICENSES)) + geom_histogram(color = 'grey', fill='yellow', bins=15)
+```
+
+# Finds
+For first histogram, it talks about the overall trend of stillbirth from Jan. 2011 to Aug.2020. We could easily realize the mode of embryos die every month is aound at 50, the lowest and highest record is around 0 and 162. I would like to find out if there will be changes in 2020, so I made the second histogram. The difference is that the mode of stillbirth increased to 70 per month. 
+In conclusion, the maximum number of stillbirth decreased to 75 may be caused by the development of technology and improved nutrition, but the mode of stillbirth per month grew significantly.
+
+
+# Reference
+City Clerk's Office. 2020. “Stillbirth Registration Statistics.” https://open.toronto.ca/dataset/stillbirth-registration-statistics/
